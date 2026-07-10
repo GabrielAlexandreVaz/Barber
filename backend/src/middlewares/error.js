@@ -1,6 +1,7 @@
 'use strict';
 
 const { Prisma } = require('@prisma/client');
+const { MulterError } = require('multer');
 const env = require('../config/env');
 const { logger } = require('../config/logger');
 
@@ -33,6 +34,15 @@ function errorHandler(err, req, res, next) {
   if (err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') {
     statusCode = 401;
     message = 'Token inválido ou expirado.';
+  }
+
+  // Erros do Multer (upload)
+  if (err instanceof MulterError) {
+    statusCode = 400;
+    message =
+      err.code === 'LIMIT_FILE_SIZE'
+        ? 'Arquivo muito grande (máximo 5MB).'
+        : 'Falha no envio do arquivo.';
   }
 
   if (statusCode >= 500) {

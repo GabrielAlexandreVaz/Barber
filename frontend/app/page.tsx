@@ -4,15 +4,26 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSettings } from "@/hooks/useSettings";
+import { fileUrl } from "@/lib/media";
 
 export default function HomePage() {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
+  const { data: settings } = useSettings();
+  const shopName = settings?.["shop.name"] || "THE GUETTO";
+  const logo = fileUrl(settings?.["shop.logoUrl"]);
 
   return (
     <main className="bg-guetto flex min-h-screen flex-col">
       <header className="flex items-center justify-between px-6 py-5 md:px-10">
-        <span className="text-lg font-bold tracking-[0.25em] text-gradient-gold">
-          THE GUETTO
+        <span className="flex items-center gap-3">
+          {logo && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={logo} alt={shopName} className="h-9 w-9 rounded-full object-cover" />
+          )}
+          <span className="text-lg font-bold uppercase tracking-[0.25em] text-gradient-gold">
+            {shopName}
+          </span>
         </span>
         <nav className="flex items-center gap-3">
           {isLoading ? null : isAuthenticated ? (
@@ -20,7 +31,15 @@ export default function HomePage() {
               <span className="hidden text-sm text-muted sm:inline">
                 Olá, {user?.name.split(" ")[0]}
               </span>
-              <Button variant="ghost" onClick={() => logout()}>
+              <Link href="/perfil">
+                <Button variant="ghost">Perfil</Button>
+              </Link>
+              {user?.role === "ADMIN" && (
+                <Link href="/admin/usuarios">
+                  <Button variant="ghost">Usuários</Button>
+                </Link>
+              )}
+              <Button variant="outline" onClick={() => logout()}>
                 Sair
               </Button>
             </>

@@ -4,16 +4,19 @@ import type { ApiResponse, AuthPayload } from "@/types";
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
 
-export const api = axios.create({
-  baseURL,
-  headers: { "Content-Type": "application/json" },
-});
+// Sem Content-Type fixo: o axios define application/json para corpos JSON e
+// deixa o browser definir multipart/form-data (com boundary) para FormData.
+export const api = axios.create({ baseURL });
 
 // Anexa o access token em toda requisição
 api.interceptors.request.use((config) => {
   const token = tokenStorage.getAccess();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+  }
+  // Garante que uploads (FormData) não herdem um Content-Type sem boundary
+  if (typeof FormData !== "undefined" && config.data instanceof FormData) {
+    config.headers.delete("Content-Type");
   }
   return config;
 });

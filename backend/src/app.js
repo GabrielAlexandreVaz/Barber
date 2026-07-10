@@ -30,8 +30,17 @@ app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(globalLimiter);
 
-// Arquivos enviados (fotos de barbeiros/serviços/logo)
-app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
+// Arquivos enviados (fotos de barbeiros/serviços/logo).
+// CORP cross-origin: permite que o frontend (outra origem) carregue as imagens,
+// contornando o Cross-Origin-Resource-Policy 'same-origin' padrão do Helmet.
+app.use(
+  '/uploads',
+  (req, res, next) => {
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    next();
+  },
+  express.static(path.resolve(__dirname, '../uploads')),
+);
 
 // API
 app.use('/api', routes);
