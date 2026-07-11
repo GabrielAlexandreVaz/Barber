@@ -27,8 +27,9 @@ export default function LoginPage() {
   async function onSubmit(values: LoginForm) {
     setFormError(null);
     try {
-      await login(values);
-      router.push("/");
+      const user = await login(values);
+      // Equipe (admin/barbeiro) vai direto ao painel; cliente à home.
+      router.push(user.role === "CLIENT" ? "/" : "/dashboard");
     } catch (err) {
       setFormError(getApiErrorMessage(err, "Não foi possível entrar."));
     }

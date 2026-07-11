@@ -46,10 +46,15 @@ export const changePasswordSchema = z
     path: ["confirmPassword"],
   });
 
-const optionalUrl = z
+// Aceita vazio, URL http(s) completa ou caminho de upload local ("/uploads/...").
+// (Espelha o isImageRef do backend — uploads retornam caminho relativo.)
+const imageRef = z
   .string()
   .trim()
-  .url("URL inválida.")
+  .refine(
+    (v) => v === "" || v.startsWith("/uploads/") || /^https?:\/\//.test(v),
+    "Imagem inválida.",
+  )
   .optional()
   .or(z.literal(""));
 
@@ -58,7 +63,7 @@ const barberBase = {
   phone: z.string().trim().min(8, "Telefone inválido.").optional().or(z.literal("")),
   specialty: z.string().trim().max(120).optional().or(z.literal("")),
   bio: z.string().trim().max(1000).optional().or(z.literal("")),
-  photoUrl: optionalUrl,
+  photoUrl: imageRef,
   instagram: z.string().trim().max(60).optional().or(z.literal("")),
 };
 
@@ -86,7 +91,7 @@ export const serviceSchema = z.object({
     .max(600, "Máximo 600 minutos."),
   category: z.string().trim().max(60).optional().or(z.literal("")),
   description: z.string().trim().max(1000).optional().or(z.literal("")),
-  imageUrl: z.string().trim().url("URL inválida.").optional().or(z.literal("")),
+  imageUrl: imageRef,
 });
 
 export type LoginForm = z.infer<typeof loginSchema>;

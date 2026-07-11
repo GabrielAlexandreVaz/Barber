@@ -16,10 +16,10 @@
   --foreground: #f5f5f4;
   --muted: #a1a1aa;
 
-  /* Dourado (marca) */
-  --gold: #d4af37;
-  --gold-soft: #e6c766;
-  --gold-deep: #a8842a;
+  /* Cor da marca — laranja (tokens mantêm o nome "gold" por compatibilidade) */
+  --gold: #e8611c;
+  --gold-soft: #f5883f;
+  --gold-deep: #b64a10;
   --on-gold: #0a0a0b;
 
   /* Estados */
@@ -61,8 +61,8 @@ body {
 /* Textura sutil de brilho dourado no fundo (premium, discreto) */
 .bg-guetto {
   background:
-    radial-gradient(60rem 40rem at 80% -10%, rgba(212, 175, 55, 0.08), transparent 60%),
-    radial-gradient(50rem 40rem at -10% 110%, rgba(212, 175, 55, 0.05), transparent 55%),
+    radial-gradient(60rem 40rem at 80% -10%, rgba(232, 97, 28, 0.10), transparent 60%),
+    radial-gradient(50rem 40rem at -10% 110%, rgba(232, 97, 28, 0.06), transparent 55%),
     var(--background);
 }
 
@@ -71,4 +71,24 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* Barra de rolagem fina no tema da aplicação (usada na sidebar) */
+.scrollbar-slim {
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface-2) transparent;
+}
+.scrollbar-slim::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.scrollbar-slim::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-slim::-webkit-scrollbar-thumb {
+  background: var(--surface-2);
+  border-radius: 9999px;
+}
+.scrollbar-slim::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-deep);
 }
